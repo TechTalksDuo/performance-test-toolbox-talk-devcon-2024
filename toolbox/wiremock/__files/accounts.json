@@ -1,0 +1,12 @@
+{
+  "accounts": [
+    {
+      "id": "123",
+      "name": "Account name 12312312"
+    },
+    {
+      "id": "456",
+      "name": "Account name 454546464"
+    }
+  ]
+}

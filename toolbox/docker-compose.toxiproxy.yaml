@@ -1,0 +1,39 @@
+volumes:
+  prometheus_data: {}
+  grafana_data: {}
+services:
+  toxiproxy-ui:
+    image: "buckle/toxiproxy-frontend"
+    ports:
+      - "8470:8080"
+    environment:
+      TOXIPROXY_URL: http://toxiproxy:8474
+    depends_on:
+      - toxiproxy
+  toxiproxy:
+    image: "toxiproxy:latest"
+    platform: ${CURRENT_PLATFORM}
+    ports:
+      - "8474:8474"
+      - "8081:8081"
+      - "9142:9142"
+    # We created proxy configuration from another ephermal container
+    deploy:
+      resources:
+        limits:
+          cpus: '4'
+          memory: 2024M
+        reservations:
+          cpus: '4'
+          memory: 2024M
+  toxiproxy-config:
+    image: "toxiproxy:latest"
+    platform: ${CURRENT_PLATFORM}
+    entrypoint: >
+      sh -c "/go/bin/toxiproxy-cli -h toxiproxy:8474 create --listen 0.0.0.0:9142 --upstream cassandra:9042 cassandra;
+      /go/bin/toxiproxy-cli -h toxiproxy:8474 toxic add -t latency -a latency=200 cassandra;
+      /go/bin/toxiproxy-cli -h toxiproxy:8474 create --listen 0.0.0.0:8081 --upstream wiremock:8080 wiremock;
+      /go/bin/toxiproxy-cli -h toxiproxy:8474 toxic add -t latency -a latency=50 wiremock;
+      "
+    depends_on:
+      - toxiproxy

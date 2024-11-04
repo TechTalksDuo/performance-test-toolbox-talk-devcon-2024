@@ -1,0 +1,53 @@
+services:
+  app:
+#    image: 'app:new-resttemplate'
+#    image: 'app:no-enable-async'
+    image: 'app:latest'
+    platform: ${CURRENT_PLATFORM}
+    volumes:
+      - ./jfr:/home/app/jfr
+    environment:
+      JAVA_TOOL_OPTIONS : -XX:+FlightRecorder -XX:StartFlightRecording=delay=30s,duration=300s,filename=/home/app/jfr/app.jfr
+    command:
+      - "--spring.profiles.active=docker"
+      - "--spring.cassandra.contact-points=toxiproxy:9142"
+      - "--wiremock.server.hostname=toxiproxy"
+      - "--wiremock.server.port=8081"
+      - "--logging.level.org.apache.hc.client5.http.impl.io=INFO"
+      - "--logging.level.tech.duo.app=WARN"
+      - "--logging.level.org.springframework.data.cassandra.core.cql=INFO"
+      - "--rest-template.connections.max-total=3000"
+      - "--rest-template.connections.per-route-max-total=3000"
+      - "--spring.threads.virtual.enabled=true"
+#      - "--spring.task.execution.pool.core-size=100"
+    ports:
+      - '8080:8080'
+    deploy:
+      resources:
+        limits:
+          cpus: '4'
+          memory: 2G
+        reservations:
+          cpus: '4'
+          memory: 2G
+  webflux-app:
+    image: 'webflux-app:latest'
+    platform: ${CURRENT_PLATFORM}
+    volumes:
+      - ./jfr:/home/app/jfr
+    command:
+      - "--spring.profiles.active=docker"
+      - "--wiremock.server.hostname=toxiproxy"
+      - "--wiremock.server.port=8081"
+      - "--client.connections.max-total=2000"
+      - "--client.connections.max-total-pending=2000"
+    ports:
+      - '8080:8080'
+    deploy:
+      resources:
+        limits:
+          cpus: '1'
+          memory: 2G
+        reservations:
+          cpus: '1'
+          memory: 2G

@@ -1,0 +1,20 @@
+services:
+  wiremock:
+    image: 'wiremock/wiremock:latest'
+    platform: ${CURRENT_PLATFORM}
+    volumes:
+      - ./wiremock/__files:/home/wiremock/__files
+      - ./wiremock/mappings:/home/wiremock/mappings
+    environment:
+      - '_JAVA_OPTIONS=-Xmx4g'
+    entrypoint: ["/docker-entrypoint.sh", "--global-response-templating", "--no-request-journal", "--async-response-enabled=true", "--global-response-templating"]
+    ports:
+      - '18080:8080'
+    deploy:
+      resources:
+        limits:
+          cpus: '4'
+          memory: 1024M
+        reservations:
+          cpus: '4'
+          memory: 1024M

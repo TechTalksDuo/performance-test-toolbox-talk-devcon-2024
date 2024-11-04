@@ -1,0 +1,29 @@
+@startuml
+set separator none
+title Toolbox
+
+top to bottom direction
+
+!include <C4/C4>
+!include <C4/C4_Context>
+!include <C4/C4_Component>
+
+Container_Boundary("Toolbox_boundary", "docker-compose", $tags="") {
+  Container(Toolbox.Prometheus, "Prometheus", $techn="Container", $descr="", $tags="", $link="")
+  Container(Toolbox.Grafana, "Grafana", $techn="Container", $descr="", $tags="", $link="")
+  Container(Toolbox.Wrk, "Wrk", $techn="Container", $descr="", $tags="", $link="")
+  Container(Toolbox.App, "App", $techn="Container", $descr="", $tags="", $link="")
+  Container_Boundary("Toolbox_Toxiproxy_boundary", "toxiproxy", $tags="") {
+      Container(Toolbox.Cassandra, "Cassandra", $techn="Container", $descr="", $tags="", $link="")
+      Container(Toolbox.Wiremock, "Wiremock", $techn="Container", $descr="", $tags="", $link="")
+  }
+}
+
+Rel(Toolbox.Grafana, Toolbox.Prometheus, "uses", $techn="", $tags="", $link="")
+Rel(Toolbox.Prometheus, Toolbox.App, "scrapes", $techn="", $tags="", $link="")
+Rel(Toolbox.App, Toolbox.Cassandra, "calls", $techn="", $tags="", $link="")
+Rel(Toolbox.App, Toolbox.Wiremock, "calls", $techn="", $tags="", $link="")
+Rel(Toolbox.Wrk, Toolbox.App, "tests", $techn="", $tags="", $link="")
+
+SHOW_LEGEND(true)
+@enduml

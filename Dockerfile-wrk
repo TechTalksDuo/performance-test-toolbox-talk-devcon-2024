@@ -1,0 +1,7 @@
+FROM alpine:latest
+RUN apk add --no-cache wget
+RUN apk update && apk add wget
+RUN apk add wrk
+
+ENTRYPOINT ["wrk"]
+CMD ["--help"]

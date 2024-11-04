@@ -1,0 +1,18 @@
+{
+  "request": {
+    "method": "GET",
+    "url": "/api/slow-resource"
+  },
+  "response": {
+    "status": 200,
+    "headers": {
+      "Content-Type": "application/json",
+      "Cache-Control": "no-cache"
+    },
+    "fixedDelayMilliseconds": 5000,
+    "transformers": ["response-template"],
+    "jsonBody": {
+      "data": "{{randomValue length=27 type='ALPHABETIC' uppercase=true}}"
+    }
+  }
+}

@@ -1,0 +1,21 @@
+volumes:
+  prometheus_data: {}
+  grafana_data: {}
+services:
+  cassandra:
+    image: 'cassandra:latest'
+    platform: ${CURRENT_PLATFORM}
+    environment:
+      - 'CASSANDRA_DC=dc1'
+      - 'CASSANDRA_ENDPOINT_SNITCH=GossipingPropertyFileSnitch'
+    ports:
+      - '9042:9042'
+  init:
+    image: 'cassandra:latest'
+    platform: ${CURRENT_PLATFORM}
+    depends_on:
+      - cassandra
+    restart: "no"
+    entrypoint: [ "/init.sh" ]
+    volumes:
+      - ./cassandra/init.sh:/init.sh

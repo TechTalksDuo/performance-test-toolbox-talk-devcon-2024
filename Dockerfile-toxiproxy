@@ -1,0 +1,26 @@
+FROM alpine:3.10.1 as builder
+
+ENV TOXIPROXY_VERSION 2.9.0
+
+LABEL \
+  app.tag="toxiproxy$TOXIPROXY_VERSION"
+
+RUN set -ex \
+ && apk add --no-cache ca-certificates jq \
+ && apk add --no-cache --virtual .build-deps \
+    openssl \
+ && wget -q "https://github.com/Shopify/toxiproxy/releases/download/v${TOXIPROXY_VERSION}/toxiproxy-server-linux-arm64" -O /toxiproxy \
+ && wget -q "https://github.com/Shopify/toxiproxy/releases/download/v${TOXIPROXY_VERSION}/toxiproxy-cli-linux-arm64" -O /toxiproxy-cli \
+ && apk del .build-deps
+
+FROM builder
+RUN mkdir /go
+RUN mkdir /go/bin
+RUN mv /toxiproxy /go/bin/toxiproxy
+RUN mv /toxiproxy-cli /go/bin/toxiproxy-cli
+RUN chmod +x /go/bin/toxiproxy
+RUN chmod +x /go/bin/toxiproxy-cli
+
+EXPOSE 8474
+ENTRYPOINT ["/go/bin/toxiproxy"]
+CMD ["-host=0.0.0.0"]
