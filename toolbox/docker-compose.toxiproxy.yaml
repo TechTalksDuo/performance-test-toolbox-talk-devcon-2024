@@ -4,6 +4,7 @@ volumes:
 services:
   toxiproxy-ui:
     image: "buckle/toxiproxy-frontend"
+    platform: linux/amd64
     ports:
       - "8470:8080"
     environment:
@@ -11,8 +12,8 @@ services:
     depends_on:
       - toxiproxy
   toxiproxy:
-    image: "toxiproxy:latest"
-    platform: ${CURRENT_PLATFORM}
+    image: "shopify/toxiproxy:latest"
+    platform: linux/amd64
     ports:
       - "8474:8474"
       - "8081:8081"

@@ -10,6 +10,9 @@ deleteDatasources:
 # whats available in the database
 datasources:
   # <string, required> name of the datasource. Required
+- name: tempo
+  type: tempo
+  url: http://tempo:3200
 - name: Prometheus
   # <string, required> datasource type. Required
   type: prometheus

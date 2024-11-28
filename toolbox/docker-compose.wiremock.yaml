@@ -3,11 +3,19 @@ services:
     image: 'wiremock/wiremock:latest'
     platform: ${CURRENT_PLATFORM}
     volumes:
+      - ./wiremock/wiremock-extension-all.jar:/var/wiremock/extensions/wiremock-extension.jar
       - ./wiremock/__files:/home/wiremock/__files
       - ./wiremock/mappings:/home/wiremock/mappings
     environment:
       - '_JAVA_OPTIONS=-Xmx4g'
-    entrypoint: ["/docker-entrypoint.sh", "--global-response-templating", "--no-request-journal", "--async-response-enabled=true", "--global-response-templating"]
+      - 'METRICS_URL=http://tempo:4318/v1/metrics'
+      - 'TRACES_URL=http://tempo:4318/v1/traces'
+      - 'SPRING_JACKSON_SERIALIZATION.FAIL_ON_EMPTY_BEANS=false'
+    command:
+      - "--global-response-templating"
+      - "--async-response-enabled=true"
+      - "--global-response-templating"
+#      - --spring.jackson.serialization.FAIL_ON_EMPTY_BEANS=false
     ports:
       - '18080:8080'
     deploy:
