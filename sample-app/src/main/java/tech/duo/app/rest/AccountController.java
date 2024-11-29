@@ -78,11 +78,11 @@ public abstract class AccountController {
     public CompletableFuture<AccountWithBalanceResponse> getAccountById(@PathVariable String id) {
 
         return cassandraOperations.selectOneById(id, AccountEntity.class)
-                .thenApplyAsync(account -> {
+                .thenApply(account -> {
                     var balance = apiClient.getBalance(account.getId());
                     return new AccountWithBalanceResponse(account.getId(), account.getName(),
                             balance.balance().currency(), balance.balance().amount());
-                }, Executors.newVirtualThreadPerTaskExecutor());
+                });
     }
 
     @GetMapping("/accounts-spring-data-cf-then-apply/{id}")
