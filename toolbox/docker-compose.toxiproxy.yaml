@@ -2,15 +2,15 @@ volumes:
   prometheus_data: {}
   grafana_data: {}
 services:
-  toxiproxy-ui:
-    image: "buckle/toxiproxy-frontend"
-    platform: linux/amd64
-    ports:
-      - "8470:8080"
-    environment:
-      TOXIPROXY_URL: http://toxiproxy:8474
-    depends_on:
-      - toxiproxy
+#  toxiproxy-ui:
+#    image: "buckle/toxiproxy-frontend"
+#    platform: linux/amd64
+#    ports:
+#      - "8470:8080"
+#    environment:
+#      TOXIPROXY_URL: http://toxiproxy:8474
+#    depends_on:
+#      - toxiproxy
   toxiproxy:
     image: "shopify/toxiproxy:latest"
     platform: linux/amd64

@@ -45,8 +45,8 @@ services:
     volumes:
       - ./reports/:/home/reports
     command:
-      - -t1000
-      - -c1000
+      - -t100
+      - -c100
       - -d600
       - --latency
 #      - http://app:8080/api/v1/accounts-spring-data-cf-then-apply-async-vt/123
